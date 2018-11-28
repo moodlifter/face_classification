@@ -31,6 +31,10 @@ emotion_target_size = emotion_classifier.input_shape[1:3]
 # starting lists for calculating modes
 emotion_window = []
 
+# stress level
+stress_level = 0.0
+count = 0
+
 # starting video streaming
 cv2.namedWindow('window_frame')
 video_capture = cv2.VideoCapture(0)
@@ -82,6 +86,22 @@ while True:
         draw_bounding_box(face_coordinates, rgb_image, color)
         draw_text(face_coordinates, rgb_image, emotion_mode,
                   color, 0, -45, 1, 1)
+
+        if count % 10 == 0:
+            if emotion_mode == 'angry' and stress_level <= 100:
+                stress_level += 10
+            elif emotion_mode == 'sad' and stress_level <= 100:
+                stress_level += 2
+            elif emotion_mode == 'happy' and stress_level > 0:
+                stress_level -= 10
+            elif stress_level > 0:
+                stress_level -= 0.5
+            print(stress_level)
+
+        if stress_level >= 60:
+            print("STTTTRRREEEEEEEESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+
+    count += 1
 
     bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
     cv2.imshow('window_frame', bgr_image)
